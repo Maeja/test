@@ -9,7 +9,6 @@ export default class SettingScreen extends Component {
         return (
             <View style={{flex: 1}}>
                 <Text style={styles.textOr}>или введите свой</Text>
-
             </View>
         );
     }
