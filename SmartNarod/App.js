@@ -6,9 +6,20 @@
 
 import React, {Component} from 'react';
 import Realm from 'realm';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, Alert, StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
 
 
+function updateUI() {
+    Alert.alert(
+        'Alert Title',
+        'My Alert Msg',
+        [
+            {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
+            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]
+    )
+    }
 export default class App extends Component<{}> {
 	constructor(props) {
 		super(props);
@@ -25,7 +36,20 @@ export default class App extends Component<{}> {
 					realm.create('Dog', {name: 'Rex'});
 				});
 				this.setState({ realm });
-			});
+                realm.addListener('change', updateUI);
+
+            });
+		}
+	componentWillMountq() {
+			Realm.open({
+				schema: [{name: 'Dog', properties: {name: 'string'}}]
+			}).then(realm => {
+				realm.write(() => {
+                    realm.create('Dog', {name: 'Rex'});
+                });
+                realm.addListener('change', updateUI);
+
+            });
 		}
 
 		render() {
@@ -35,9 +59,11 @@ export default class App extends Component<{}> {
 
 			return (
 				<View style={styles.container}>
+					<TouchableWithoutFeedback onPress={this.componentWillMountq}>
 					<Text style={styles.welcome}>
 						{info}
 					</Text>
+					</TouchableWithoutFeedback>
 				</View>
 			);
 		}
